@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>reCAPTCHA demo: Explicit render after an onload callback</title>
+    <script type="text/javascript">
+        var onloadCallback = function () {
+            grecaptcha.render('html_element', {
+                'sitekey': '6LeoeSkTAAAAAA9rkZs5oS82l69OEYjKRZAiKdaF'
+            });
+        };
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+    </script>
+</head>
+<body>
+    <form id="RecaptchaFrm" action="?" method="POST">
+        <div id="html_element"></div>
+        <input type="hidden" name="id" id="task_id" value=""/>
+    </form>
+    <script>
+        var id = getParameterByName("id");
+        window.task_id.setAttribute("value", id);
+        var timer = setInterval(() => {
+            var tag = window["g-recaptcha-response"];
+            if (tag && tag.value != "") {
+                window.RecaptchaFrm.submit();
+                clearInterval(timer);
+            }
+        }, 10);
+    </script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async defer>
+    </script>
+</body>
+</html>
